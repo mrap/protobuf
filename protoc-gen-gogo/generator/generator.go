@@ -3291,6 +3291,9 @@ func CamelCase(s string) string {
 func CamelCaseSlice(elem []string) string { return CamelCase(strings.Join(elem, "_")) }
 
 func LowercaseFirst(s string) string {
+	if len(s) == 0 {
+		return s
+	}
 	return string(bytes.ToLower([]byte{s[0]})) + s[1:]
 }
 
