@@ -35,10 +35,14 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 option (gogoproto.populate_all) = true;
 
 message Outside {
+  option (gogoproto.xml_fields) = true;
 	optional Inside Inside = 1 [(gogoproto.embed) = true, (gogoproto.jsontag) = ""];
-	optional string Field2 = 2 [(gogoproto.jsontag) = "MyField2", (gogoproto.moretags) = "xml:\",comment\""];
+	optional string Field2 = 2 [(gogoproto.jsontag) = "MyField2", (gogoproto.xmltype) = "comment"];
+	optional string AttrField = 3 [(gogoproto.xmltype) = "attr"];
+	optional string InnerElem = 4;
+	optional string CustomXmlTag = 5 [(gogoproto.xmltag) = "XMLTag"];
 }
 
 message Inside {
-	optional string Field1 = 1 [(gogoproto.jsontag) = "MyField1", (gogoproto.moretags) = "xml:\",chardata\""];
+	optional string Field1 = 1 [(gogoproto.jsontag) = "MyField1", (gogoproto.xmltype) = "content"];
 }

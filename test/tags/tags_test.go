@@ -32,6 +32,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	math_rand "math/rand"
 	"testing"
 	"time"
@@ -88,23 +89,38 @@ func TestJson(t *testing.T) {
 	}
 }
 
-func TestXml(t *testing.T) {
-	s := "<Outside>Field1Value<!--Field2Value--><XXX_unrecognized></XXX_unrecognized></Outside>"
+func TestXmlType(t *testing.T) {
+	attr := "attrValue"
+	innerElem := "InnerElemValue"
 	field1 := "Field1Value"
 	field2 := "Field2Value"
+	customXmlTag := "CustomXmlTagValue"
+	s := fmt.Sprintf(`<Outside attrField=%q>%s<!--%s--><InnerElem>%s</InnerElem><XMLTag>%s</XMLTag><XXX_unrecognized></XXX_unrecognized></Outside>`, attr, field1, field2, innerElem, customXmlTag)
 	msg1 := &Outside{}
 	err := xml.Unmarshal([]byte(s), msg1)
 	if err != nil {
 		panic(err)
 	}
 	msg2 := &Outside{
+		AttrField: &attr,
 		Inside: &Inside{
 			Field1: &field1,
 		},
-		Field2: &field2,
+		Field2:       &field2,
+		InnerElem:    &innerElem,
+		CustomXmlTag: &customXmlTag,
 	}
 	if msg1.GetField1() != msg2.GetField1() {
 		t.Fatalf("field1 expected %s got %s", msg2.GetField1(), msg1.GetField1())
+	}
+	if msg1.GetAttrField() != msg2.GetAttrField() {
+		t.Fatalf("attrField expected %s got %s", msg2.GetAttrField(), msg1.GetAttrField())
+	}
+	if msg1.GetInnerElem() != msg2.GetInnerElem() {
+		t.Fatalf("innerElem expected %s got %s", msg2.GetInnerElem(), msg1.GetInnerElem())
+	}
+	if msg1.GetCustomXmlTag() != msg2.GetCustomXmlTag() {
+		t.Fatalf("customXmlTag expected %s got %s", msg2.GetCustomXmlTag(), msg1.GetCustomXmlTag())
 	}
 	if err != nil {
 		panic(err)

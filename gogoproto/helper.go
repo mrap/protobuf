@@ -98,6 +98,23 @@ func HasTypeDecl(file *google_protobuf.FileDescriptorProto, message *google_prot
 	return proto.GetBoolExtension(message.Options, E_Typedecl, proto.GetBoolExtension(file.Options, E_TypedeclAll, true))
 }
 
+func HasXmlFields(file *google_protobuf.FileDescriptorProto, message *google_protobuf.DescriptorProto) bool {
+	return proto.GetBoolExtension(message.Options, E_XmlFields, proto.GetBoolExtension(file.Options, E_XmlFieldsAll, false))
+}
+
+func GetXmlTag(field *google_protobuf.FieldDescriptorProto) *string {
+	if field == nil {
+		return nil
+	}
+	if field.Options != nil {
+		v, err := proto.GetExtension(field.Options, E_Xmltag)
+		if err == nil && v.(*string) != nil {
+			return (v.(*string))
+		}
+	}
+	return nil
+}
+
 func GetCustomType(field *google_protobuf.FieldDescriptorProto) string {
 	if field == nil {
 		return ""
@@ -232,6 +249,19 @@ func GetMoreTags(field *google_protobuf.FieldDescriptorProto) *string {
 	}
 	if field.Options != nil {
 		v, err := proto.GetExtension(field.Options, E_Moretags)
+		if err == nil && v.(*string) != nil {
+			return (v.(*string))
+		}
+	}
+	return nil
+}
+
+func GetXmlType(field *google_protobuf.FieldDescriptorProto) *string {
+	if field == nil {
+		return nil
+	}
+	if field.Options != nil {
+		v, err := proto.GetExtension(field.Options, E_Xmltype)
 		if err == nil && v.(*string) != nil {
 			return (v.(*string))
 		}
