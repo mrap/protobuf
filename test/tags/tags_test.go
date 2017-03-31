@@ -32,6 +32,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	math_rand "math/rand"
 	"testing"
 	"time"
@@ -88,16 +89,18 @@ func TestJson(t *testing.T) {
 	}
 }
 
-func TestXml(t *testing.T) {
-	s := "<Outside>Field1Value<!--Field2Value--><XXX_unrecognized></XXX_unrecognized></Outside>"
+func TestXmlType(t *testing.T) {
+	attr := "attrValue"
 	field1 := "Field1Value"
 	field2 := "Field2Value"
+	s := fmt.Sprintf(`<Outside attrField=%q>%s<!--%s--><XXX_unrecognized></XXX_unrecognized></Outside>`, attr, field1, field2)
 	msg1 := &Outside{}
 	err := xml.Unmarshal([]byte(s), msg1)
 	if err != nil {
 		panic(err)
 	}
 	msg2 := &Outside{
+		AttrField: &attr,
 		Inside: &Inside{
 			Field1: &field1,
 		},
@@ -105,6 +108,9 @@ func TestXml(t *testing.T) {
 	}
 	if msg1.GetField1() != msg2.GetField1() {
 		t.Fatalf("field1 expected %s got %s", msg2.GetField1(), msg1.GetField1())
+	}
+	if msg1.GetAttrField() != msg2.GetAttrField() {
+		t.Fatalf("attrField expected %s got %s", msg2.GetAttrField(), msg1.GetAttrField())
 	}
 	if err != nil {
 		panic(err)

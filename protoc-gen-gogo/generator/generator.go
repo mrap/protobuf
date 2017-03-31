@@ -2118,12 +2118,36 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			if gogoJsonTag != nil {
 				jsonTag = *gogoJsonTag
 			}
+
+			var xmlTag string
+			gogoXmlType := gogoproto.GetXmlType(field)
+			if gogoXmlType != nil || gogoproto.HasXmlFields(message.file, message.DescriptorProto) {
+				// Xml tag piggybacks json tag
+				xmlTag = jsonTag
+				if gogoXmlType != nil {
+					switch *gogoXmlType {
+					case "attr":
+						xmlTag = LowercaseFirst(xmlTag) + ",attr"
+					case "content":
+						xmlTag = ",chardata"
+					case "comment":
+						xmlTag = ",comment"
+					}
+				}
+			}
+
 			gogoMoreTags := gogoproto.GetMoreTags(field)
 			moreTags := ""
 			if gogoMoreTags != nil {
 				moreTags = " " + *gogoMoreTags
 			}
-			tag := fmt.Sprintf("protobuf:%s json:%q%s", g.goTag(message, field, wiretype), jsonTag, moreTags)
+
+			tag := fmt.Sprintf("protobuf:%s json:%q", g.goTag(message, field, wiretype), jsonTag)
+			if xmlTag != "" {
+				tag += fmt.Sprintf(" xml:%q", xmlTag)
+			}
+			tag += moreTags
+
 			if *field.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE && gogoproto.IsEmbed(field) {
 				fieldName = ""
 			}
@@ -3265,6 +3289,10 @@ func CamelCase(s string) string {
 // CamelCaseSlice is like CamelCase, but the argument is a slice of strings to
 // be joined with "_".
 func CamelCaseSlice(elem []string) string { return CamelCase(strings.Join(elem, "_")) }
+
+func LowercaseFirst(s string) string {
+	return string(bytes.ToLower([]byte{s[0]})) + s[1:]
+}
 
 // dottedSlice turns a sliced name into a dotted name.
 func dottedSlice(elem []string) string { return strings.Join(elem, ".") }

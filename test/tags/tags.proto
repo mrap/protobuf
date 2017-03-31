@@ -36,9 +36,10 @@ option (gogoproto.populate_all) = true;
 
 message Outside {
 	optional Inside Inside = 1 [(gogoproto.embed) = true, (gogoproto.jsontag) = ""];
-	optional string Field2 = 2 [(gogoproto.jsontag) = "MyField2", (gogoproto.moretags) = "xml:\",comment\""];
+	optional string Field2 = 2 [(gogoproto.jsontag) = "MyField2", (gogoproto.xmltype) = "comment"];
+	optional string AttrField = 3 [(gogoproto.xmltype) = "attr"];
 }
 
 message Inside {
-	optional string Field1 = 1 [(gogoproto.jsontag) = "MyField1", (gogoproto.moretags) = "xml:\",chardata\""];
+	optional string Field1 = 1 [(gogoproto.jsontag) = "MyField1", (gogoproto.xmltype) = "content"];
 }
