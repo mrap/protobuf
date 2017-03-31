@@ -91,9 +91,10 @@ func TestJson(t *testing.T) {
 
 func TestXmlType(t *testing.T) {
 	attr := "attrValue"
+	innerElem := "InnerElemValue"
 	field1 := "Field1Value"
 	field2 := "Field2Value"
-	s := fmt.Sprintf(`<Outside attrField=%q>%s<!--%s--><XXX_unrecognized></XXX_unrecognized></Outside>`, attr, field1, field2)
+	s := fmt.Sprintf(`<Outside attrField=%q>%s<!--%s--><InnerElem>%s</InnerElem><XXX_unrecognized></XXX_unrecognized></Outside>`, attr, field1, field2, innerElem)
 	msg1 := &Outside{}
 	err := xml.Unmarshal([]byte(s), msg1)
 	if err != nil {
@@ -104,13 +105,17 @@ func TestXmlType(t *testing.T) {
 		Inside: &Inside{
 			Field1: &field1,
 		},
-		Field2: &field2,
+		Field2:    &field2,
+		InnerElem: &innerElem,
 	}
 	if msg1.GetField1() != msg2.GetField1() {
 		t.Fatalf("field1 expected %s got %s", msg2.GetField1(), msg1.GetField1())
 	}
 	if msg1.GetAttrField() != msg2.GetAttrField() {
 		t.Fatalf("attrField expected %s got %s", msg2.GetAttrField(), msg1.GetAttrField())
+	}
+	if msg1.GetInnerElem() != msg2.GetInnerElem() {
+		t.Fatalf("innerElem expected %s got %s", msg2.GetInnerElem(), msg1.GetInnerElem())
 	}
 	if err != nil {
 		panic(err)

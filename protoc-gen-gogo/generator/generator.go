@@ -2123,11 +2123,11 @@ func (g *Generator) generateMessage(message *Descriptor) {
 			gogoXmlType := gogoproto.GetXmlType(field)
 			if gogoXmlType != nil || gogoproto.HasXmlFields(message.file, message.DescriptorProto) {
 				// Xml tag piggybacks json tag
-				xmlTag = jsonTag
+				xmlTag = UppercaseFirst(jsonTag)
 				if gogoXmlType != nil {
 					switch *gogoXmlType {
 					case "attr":
-						xmlTag = LowercaseFirst(xmlTag) + ",attr"
+						xmlTag = LowercaseFirst(jsonTag) + ",attr"
 					case "content":
 						xmlTag = ",chardata"
 					case "comment":
@@ -3295,6 +3295,13 @@ func LowercaseFirst(s string) string {
 		return s
 	}
 	return string(bytes.ToLower([]byte{s[0]})) + s[1:]
+}
+
+func UppercaseFirst(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	return string(bytes.ToUpper([]byte{s[0]})) + s[1:]
 }
 
 // dottedSlice turns a sliced name into a dotted name.
