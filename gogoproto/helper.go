@@ -102,6 +102,19 @@ func HasXmlFields(file *google_protobuf.FileDescriptorProto, message *google_pro
 	return proto.GetBoolExtension(message.Options, E_XmlFields, proto.GetBoolExtension(file.Options, E_XmlFieldsAll, false))
 }
 
+func GetXmlTag(field *google_protobuf.FieldDescriptorProto) *string {
+	if field == nil {
+		return nil
+	}
+	if field.Options != nil {
+		v, err := proto.GetExtension(field.Options, E_Xmltag)
+		if err == nil && v.(*string) != nil {
+			return (v.(*string))
+		}
+	}
+	return nil
+}
+
 func GetCustomType(field *google_protobuf.FieldDescriptorProto) string {
 	if field == nil {
 		return ""

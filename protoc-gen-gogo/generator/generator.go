@@ -2136,6 +2136,10 @@ func (g *Generator) generateMessage(message *Descriptor) {
 				}
 			}
 
+			if gogoXmlTag := gogoproto.GetXmlTag(field); gogoXmlTag != nil {
+				xmlTag = *gogoXmlTag
+			}
+
 			gogoMoreTags := gogoproto.GetMoreTags(field)
 			moreTags := ""
 			if gogoMoreTags != nil {

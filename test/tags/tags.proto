@@ -40,6 +40,7 @@ message Outside {
 	optional string Field2 = 2 [(gogoproto.jsontag) = "MyField2", (gogoproto.xmltype) = "comment"];
 	optional string AttrField = 3 [(gogoproto.xmltype) = "attr"];
 	optional string InnerElem = 4;
+	optional string CustomXmlTag = 5 [(gogoproto.xmltag) = "XMLTag"];
 }
 
 message Inside {
